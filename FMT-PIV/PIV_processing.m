@@ -3,17 +3,17 @@ clc; clear; close all;
 %% Self-made Code Group 01
 
 FoldRead = 'data\Alpha0_dt100\';
-FileRead = 'B00001.tif';
+FileRead = 'B00005.tif';
 
 pix_size =  4.40;           % [microns]
 M = 0.0428;                 % magnification
 dt = 100;                   % [microsec] time separation
 ws = 32;                    % window size
-ovlap = 50;                 % overlap percentage
+ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
 
 % Read mask
-mask = load('WIDIM/Mask_Alpha_15');
+mask = load('WIDIM/Mask_Alpha_0');
 
 % Read and split figures
 image = imread([FoldRead FileRead]);
@@ -21,10 +21,80 @@ image = imread([FoldRead FileRead]);
 image_1 = image(1:size(image, 1)/2, :);
 image_2 = image((size(image, 1)/2) + 1:end, :);
 
-rows = 0;
+rows = size(image_1, 1);
+cols = size(image_1, 2);
 
-% Create windows
+% Size windows
+wb = ws * (1 - ovlap);                      % window boundaries
 
-ww = ws - (1-ovlap);        % window boundaries
+ncols_wdw = floor((cols - wb)/(ws - wb));   % number of windows in x-dir
+nrows_wdw = floor((rows - wb)/(ws - wb));   % number of windows in y-dir
 
-wd_arr = 0;
+% Compute cross-correlation
+
+xshift_array = zeros(nrows_wdw, ncols_wdw);
+yshift_array = zeros(nrows_wdw, ncols_wdw);
+
+for i = 1:nrows_wdw
+    
+    for j = 1:ncols_wdw
+        
+        % Index to select correct window
+        row_idx = 1 + (i - 1)*wb;
+        col_idx = 1 + (j - 1)*wb;
+        
+        % Create windows
+        wdw_1 = image_1(row_idx:row_idx + (ws - 1), col_idx:col_idx + (ws - 1));
+        wdw_2 = image_2(row_idx:row_idx + (ws - 1), col_idx:col_idx + (ws - 1));
+        
+        % Remove mean
+        wdw_1 = wdw_1 - mean(wdw_1, 'all');
+        wdw_2 = wdw_2 - mean(wdw_2, 'all');
+        
+        % Calculate correlation
+        phi = xcorr2(wdw_1, wdw_2);
+        
+        % Locate peak
+        [peak_value, loc] = max(phi(:));
+        [x_loc, y_loc] = ind2sub(size(phi), loc);
+        
+        % Store displacement
+        xshift_array(i, j) = x_loc;
+        yshift_array(i, j) = y_loc;
+        
+        % Compute SNR???
+        % Subpixel interpolation???
+
+    end
+    
+end
+
+% Plot correlation distribution
+figure();
+[X,Y] = meshgrid(1:size(phi, 1), 1:size(phi, 2));
+Z = phi;
+surf(X,Y,Z)
+title('Cross-Correlation')
+hold on
+scatter3(y_loc, x_loc, peak_value, 'or')
+hold off
+
+% Compute velocity magnitude
+u = (xshift_array .* pix_size)./(M * dt);
+v = (yshift_array .* pix_size)./(M * dt);
+
+v_map = sqrt(u.^2 + v.^2);
+
+% Create airfoil mask + reflection zones
+
+
+
+% Visualize velocity vectors and contours
+
+figure();
+imagesc(v_map);
+hold on
+colormap('parula')
+cbar = colorbar();
+set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
+quiver(v, u, 'k'); 
