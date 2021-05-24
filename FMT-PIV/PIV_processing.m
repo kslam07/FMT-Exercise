@@ -12,9 +12,6 @@ ws = 32;                    % window size
 ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
 
-% Read mask
-mask = load('WIDIM/Mask_Alpha_0');
-
 % Read and split figures
 image = imread([FoldRead FileRead]);
 
@@ -23,6 +20,10 @@ image_2 = image((size(image, 1)/2) + 1:end, :);
 
 rows = size(image_1, 1);
 cols = size(image_1, 2);
+
+% Read mask
+mask = load('WIDIM/Mask_Alpha_0');
+mask = poly2mask(mask.xmask, mask.ymask, rows, cols);
 
 % Size windows
 wb = ws * (1 - ovlap);                      % window boundaries
@@ -34,6 +35,7 @@ nrows_wdw = floor((rows - wb)/(ws - wb));   % number of windows in y-dir
 
 xshift_array = zeros(nrows_wdw, ncols_wdw);
 yshift_array = zeros(nrows_wdw, ncols_wdw);
+mask_array = zeros(nrows_wdw, ncols_wdw);
 
 for i = 1:nrows_wdw
     
@@ -64,6 +66,15 @@ for i = 1:nrows_wdw
         
         % Compute SNR???
         % Subpixel interpolation???
+        
+        % Create airfoil mask + reflection zones
+        wdw_mask = mask(row_idx:row_idx + (ws - 1), col_idx:col_idx + (ws - 1));
+        
+        if mean(wdw_mask, 'all') > 0
+            
+            mask_array(i, j) = 1;
+            
+        end    
 
     end
     
@@ -85,12 +96,14 @@ v = (yshift_array .* pix_size)./(M * dt);
 
 v_map = sqrt(u.^2 + v.^2);
 
-% Create airfoil mask + reflection zones
+% Apply mask
+mask_array = logical(mask_array);
 
-
+u(mask_array) = 0;
+v(mask_array) = 0;
+v_map(mask_array) = 0;
 
 % Visualize velocity vectors and contours
-
 figure();
 imagesc(v_map);
 hold on
