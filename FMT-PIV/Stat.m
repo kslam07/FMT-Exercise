@@ -2,9 +2,9 @@ clc; clear; close all;
 
 %% statistical analysis of the velocity field data
 % folder containing the velocity fields
-FoldRead=''; % (*** fill in ***)
+FoldRead='./data/Alpha0_dt100/PIV_32x32_50%ov/'; % (*** fill in ***)
 first=1;    % (*** fill in ***) first velocity field to be analyzed
-last=100;     % (*** fill in ***) last velocity field to be analyzed
+last=20;     % (*** fill in ***) last velocity field to be analyzed
 
 % do not modify the three lines below
 FileRoot = 'B0';
@@ -29,10 +29,10 @@ end
 
 % compute the mean velocity components and the fluctuations
 % root-mean-square (*** fill in ***)
-uMean = ;
-uStd = ;
-vMean = ;
-vStd = ;
+uMean = mean(uTot,3);
+uStd = std(uTot,0,3);
+vMean = mean(vTot,3);
+vStd = std(vTot,0,3);
 
 %% create the folder foldw (where the data are written) if it doesn't exist
 %% do not modify this part
