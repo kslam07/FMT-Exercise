@@ -3,7 +3,7 @@ clc; clear; close all;
 %% Self-made Code Group 01
 
 FoldRead = 'data\Alpha15_dt100\';
-FileRead = 'B00005.tif';
+FileRead = 'B00020.tif';
 
 pix_size =  4.40;           % [microns]
 M = 0.0428;                 % magnification
@@ -17,6 +17,9 @@ image = imread([FoldRead FileRead]);
 
 image_1 = image(1:size(image, 1)/2, :);
 image_2 = image((size(image, 1)/2) + 1:end, :);
+
+image_1 = double(image_1);
+image_2 = double(image_2);
 
 rows = size(image_1, 1);
 cols = size(image_1, 2);
@@ -52,7 +55,7 @@ for i = 1:nrows_wdw
         % Remove mean
         wdw_1 = wdw_1 - mean(wdw_1, 'all');
         wdw_2 = wdw_2 - mean(wdw_2, 'all');
-        
+
         % Calculate correlation
         phi = xcorr2(wdw_1, wdw_2);
         
@@ -62,8 +65,8 @@ for i = 1:nrows_wdw
         corr_offset = [(y_loc - size(wdw_1, 1)) (x_loc - size(wdw_2, 2))];
         
         % Store displacement
-        x_shift = corr_offset(1);
-        y_shift = corr_offset(2);
+        x_shift = corr_offset(2);
+        y_shift = corr_offset(1);
         
         xshift_array(i, j) = x_shift;
         yshift_array(i, j) = y_shift;
@@ -78,7 +81,9 @@ for i = 1:nrows_wdw
             
             mask_array(i, j) = 1;
             
-        end    
+        end
+        
+        location(i,j,:) = [row_idx+ws/2,row_idx+ws/2];  
 
     end
     
@@ -95,17 +100,17 @@ scatter3(x_loc, y_loc, peak_value, 'or')
 hold off
 
 % Compute velocity magnitude
-u = (xshift_array .* pix_size)./(M * dt);
-v = (yshift_array .* pix_size)./(M * dt);
+u = -(xshift_array .* pix_size)/(M * dt);
+v = -(yshift_array .* pix_size)/(M * dt);
 
 v_map = sqrt(u.^2 + v.^2);
 
 % Apply mask
 mask_array = logical(mask_array);
 
-u(mask_array) = 0;
-v(mask_array) = 0;
-v_map(mask_array) = 0;
+u(mask_array) = NaN;
+v(mask_array) = NaN;
+v_map(mask_array) = NaN;
 
 % Visualize velocity vectors and contours
 figure();
@@ -115,4 +120,14 @@ colormap('parula')
 cbar = colorbar();
 set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
 %v = zeros(size(u));
-quiver(u, v, 'k'); 
+quiver(u, v, 'k');
+
+figure();
+[X,Y] = meshgrid(1:size(v_map, 2), 1:size(v_map, 1));
+contourf(X, Y, v_map, 'LineStyle', 'none');
+hold on
+colormap('parula')
+cbar = colorbar();
+set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
+set(gca, 'YDir','reverse')
+quiver(u, v, 'k');
