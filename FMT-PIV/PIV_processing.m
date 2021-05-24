@@ -2,7 +2,7 @@ clc; clear; close all;
 
 %% Self-made Code Group 01
 
-FoldRead = 'data\Alpha0_dt100\';
+FoldRead = 'data\Alpha15_dt100\';
 FileRead = 'B00005.tif';
 
 pix_size =  4.40;           % [microns]
@@ -22,7 +22,7 @@ rows = size(image_1, 1);
 cols = size(image_1, 2);
 
 % Read mask
-mask = load('WIDIM/Mask_Alpha_0');
+mask = load('WIDIM/Mask_Alpha_15');
 mask = poly2mask(mask.xmask, mask.ymask, rows, cols);
 
 % Size windows
@@ -58,11 +58,15 @@ for i = 1:nrows_wdw
         
         % Locate peak
         [peak_value, loc] = max(phi(:));
-        [x_loc, y_loc] = ind2sub(size(phi), loc);
+        [y_loc, x_loc] = ind2sub(size(phi), loc);
+        corr_offset = [(y_loc - size(wdw_1, 1)) (x_loc - size(wdw_2, 2))];
         
         % Store displacement
-        xshift_array(i, j) = x_loc;
-        yshift_array(i, j) = y_loc;
+        x_shift = corr_offset(1);
+        y_shift = corr_offset(2);
+        
+        xshift_array(i, j) = x_shift;
+        yshift_array(i, j) = y_shift;
         
         % Compute SNR???
         % Subpixel interpolation???
@@ -80,14 +84,14 @@ for i = 1:nrows_wdw
     
 end
 
-% Plot correlation distribution
+% Plot last correlation distribution
 figure();
 [X,Y] = meshgrid(1:size(phi, 1), 1:size(phi, 2));
 Z = phi;
 surf(X,Y,Z)
 title('Cross-Correlation')
 hold on
-scatter3(y_loc, x_loc, peak_value, 'or')
+scatter3(x_loc, y_loc, peak_value, 'or')
 hold off
 
 % Compute velocity magnitude
@@ -110,4 +114,5 @@ hold on
 colormap('parula')
 cbar = colorbar();
 set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
-quiver(v, u, 'k'); 
+%v = zeros(size(u));
+quiver(u, v, 'k'); 
