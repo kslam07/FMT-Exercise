@@ -139,8 +139,8 @@ for file=1:files
 end
 
 % Visualize velocity vectors and contours
-uArr = mean(uArr,3);
-vArr = mean(vArr,3);
+uArr = mean(uArr, 3);
+vArr = mean(vArr, 3);
 v_map = sqrt(uArr.^2 + vArr.^2);
 v_map(mask_array) = NaN;
 v_map(v_map > 14) = 14;
