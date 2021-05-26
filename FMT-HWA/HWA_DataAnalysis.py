@@ -61,12 +61,13 @@ for height in HeightList: # Loop over heights
     ZeroAoA_Mean.append(np.mean(subset['U']))                   # Calculate and append mean
     ZeroAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate and append rms
 
-plt.figure(1)
-plt.plot(ZeroAoA_Mean, HeightList, marker='D', label='mean')
-plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label='rms')
-plt.xlabel('U [m/s]')
-plt.ylabel('Height [mm]')
-plt.title('AoA=0[$^\circ$]')
+plt.figure(1, constrained_layout=True, dpi=150)
+plt.plot(ZeroAoA_Mean, HeightList, marker='D', label=r'$U_{mean}$')
+plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label=r'$U_{rms}$')
+plt.xlabel('U [m/s]', fontsize=14)
+plt.ylabel('Height [mm]', fontsize=14)
+plt.title('AoA=0[$^\circ$]', fontsize=14)
+plt.grid()
 plt.legend()
 
 ########################### 5 AOA ################################3
@@ -93,12 +94,13 @@ for height in HeightList: # Loop over heights
     ZeroAoA_Mean.append(np.mean(subset['U']))                   # Calculate and append mean
     ZeroAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate and append rms
 
-plt.figure(2)
-plt.plot(ZeroAoA_Mean, HeightList, marker='D', label='mean')
-plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label='rms')
-plt.xlabel('U [m/s]')
-plt.ylabel('Height [mm]')
-plt.title('AoA=5$^\circ$')
+plt.figure(2, constrained_layout=True, dpi=150)
+plt.plot(ZeroAoA_Mean, HeightList, marker='D', label='U_{mean}')
+plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label='U_{rms}')
+plt.xlabel('U [m/s]', fontsize=14)
+plt.ylabel('Height [mm]', fontsize=14)
+plt.title('AoA=5[$^\circ$]', fontsize=14)
+plt.grid()
 plt.legend()
 
 
@@ -126,12 +128,13 @@ for height in HeightList: # Loop over heights
     ZeroAoA_Mean.append(np.mean(subset['U']))                   # Calculate and append mean
     ZeroAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate and append rms
 
-plt.figure(3)
-plt.plot(ZeroAoA_Mean, HeightList, marker='D', label='mean')
-plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label='rms')
-plt.xlabel('U [m/s]')
-plt.ylabel('Height [mm]')
-plt.title('AoA=15$^\circ$')
+plt.figure(3, constrained_layout=True, dpi=150)
+plt.plot(ZeroAoA_Mean, HeightList, marker='D', label='U_{mean}')
+plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label='U_{rms}')
+plt.xlabel('U [m/s]', fontsize=14)
+plt.ylabel('Height [mm]', fontsize=14)
+plt.title('AoA=15[$^\circ$]', fontsize=14)
+plt.grid()
 plt.legend()
 
 
