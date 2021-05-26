@@ -2,7 +2,7 @@ clc; clear; close all;
 
 %% Self-made Code Group 01
 
-AoA = 15;
+AoA = 0;
 FoldRead = ['data\Alpha' int2str(AoA) '_dt100\'];
 
 FileApp = '.tif';
@@ -14,6 +14,9 @@ ws = 32;                    % window size
 ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
 files=20;                   % number of files
+xo = 137;                   % x origin in pixels
+yo = 532;                   % y origin in pixels
+
 uArr=zeros(76,100,files);
 vArr=zeros(76,100,files);
 
@@ -52,6 +55,7 @@ for file=1:files
     xshift_array = zeros(nrows_wdw, ncols_wdw);
     yshift_array = zeros(nrows_wdw, ncols_wdw);
     mask_array = zeros(nrows_wdw, ncols_wdw);
+    center_array = zeros(nrows_wdw, ncols_wdw, 2);
 
     for i = 1:nrows_wdw
 
@@ -97,7 +101,7 @@ for file=1:files
 
             end
 
-            location(i,j,:) = [row_idx+ws/2,row_idx+ws/2];  
+            center_array(i, j, :) = [row_idx + (ws/2), col_idx + (ws/2)];  
 
         end
 
@@ -109,22 +113,19 @@ for file=1:files
         phi = phi_norm 
     end
 
-%     figure();
-%     xrange = floor(size(phi, 1)/2);
-%     yrange = floor(size(phi, 2)/2);
-%     [X,Y] = meshgrid(-xrange:xrange, -yrange:yrange);
-%     Z = phi;
-%     surf(X,Y,Z)
-%     title('Cross-Correlation')
-%     hold on
-%     scatter3(x_loc, y_loc, peak_value, 'or')
-%     hold off
+% figure();
+% xrange = floor(size(phi, 1)/2);
+% yrange = floor(size(phi, 2)/2);
+% [X,Y] = meshgrid(-xrange:xrange, -yrange:yrange);
+% Z = phi;
+% surf(X,Y,Z)
+% xlabel('$\Delta x [px]$', 'Interpreter', 'latex')
+% ylabel('$\Delta y [px]$', 'Interpreter', 'latex')
+% title('Cross-Correlation')
 
     % Compute velocity magnitude
     u = -(xshift_array .* pix_size)/(M * dt);
     v = -(yshift_array .* pix_size)/(M * dt);
-
-
 
     % Apply mask
     mask_array = logical(mask_array);
@@ -132,18 +133,19 @@ for file=1:files
     u(mask_array) = NaN;
     v(mask_array) = NaN;
     
-    uArr(:,:,file)=u;
-    vArr(:,:,file)=v;
-% Visualize velocity vectors and contours
+    uArr(:, :, file) = u;
+    vArr(:, :, file) = v;
 end
 
-uArr=mean(uArr,3);
-vArr=mean(vArr,3);
+% Visualize velocity vectors and contours
+uArr = mean(uArr,3);
+vArr = mean(vArr,3);
 v_map = sqrt(uArr.^2 + vArr.^2);
 v_map(mask_array) = NaN;
 v_map(v_map > 14) = 14;
 
 
+% Visualize velocity vectors and contours
 figure();
 imagesc(v_map);
 hold on
@@ -152,13 +154,21 @@ cbar = colorbar();
 set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
 %v = zeros(size(u));
 quiver(uArr, vArr, 'k');
+xlabel('$X [mm]$', 'Interpreter', 'latex')
+ylabel('$Y [mm]$', 'Interpreter', 'latex')
+title('u [m/s], Mean')
 
 figure();
-[X,Y] = meshgrid(1:size(v_map, 2), 1:size(v_map, 1));
-contourf(X, Y, v_map, 'LineStyle', 'none');
+xrange = (center_array(:, :, 2) - xo) * pix_size * 1e-3/M;
+yrange = (center_array(:, :, 1) - yo) * pix_size * 1e-3/M;
+contourf(xrange, yrange, v_map, 20, 'LineStyle', 'none');
+axis equal, axis tight
 hold on
 colormap('parula')
 cbar = colorbar();
 set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
 set(gca, 'YDir','reverse')
-quiver(uArr, vArr, 'k');
+quiver(xrange, yrange, uArr, vArr, 'k');
+xlabel('$X [mm]$', 'Interpreter', 'latex')
+ylabel('$Y [mm]$', 'Interpreter', 'latex')
+title('u [m/s], Mean')
