@@ -2,9 +2,9 @@ clc; clear; close all;
 
 %% Self-made Code Group 01
 
-AoA = 5;
+AoA = 15;
 FoldRead = ['data\Alpha' int2str(AoA) '_dt100\'];
-FileRead = 'B00019.tif';
+FileRead = 'B00020.tif';
 
 pix_size =  4.40;           % [microns]
 M = 0.0428;                 % magnification
@@ -14,10 +14,10 @@ ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
 
 % Read and split figures
-image = imread([FoldRead FileRead]);
+image_both = imread([FoldRead FileRead]);
 
-image_1 = image(1:size(image, 1)/2, :);
-image_2 = image((size(image, 1)/2) + 1:end, :);
+image_1 = image_both(1:size(image_both, 1)/2, :);
+image_2 = image_both((size(image_both, 1)/2) + 1:end, :);
 
 image_1 = double(image_1);
 image_2 = double(image_2);
@@ -59,6 +59,7 @@ for i = 1:nrows_wdw
 
         % Calculate correlation
         phi = xcorr2(wdw_1, wdw_2);
+        phi_norm = normxcorr2(wdw_1, wdw_2);
         
         % Locate peak
         [peak_value, loc] = max(phi(:));
@@ -91,8 +92,15 @@ for i = 1:nrows_wdw
 end
 
 % Plot last correlation distribution
+norm = false;
+if norm
+    phi = phi_norm 
+end
+
 figure();
-[X,Y] = meshgrid(1:size(phi, 1), 1:size(phi, 2));
+xrange = floor(size(phi, 1)/2);
+yrange = floor(size(phi, 2)/2);
+[X,Y] = meshgrid(-xrange:xrange, -yrange:yrange);
 Z = phi;
 surf(X,Y,Z)
 title('Cross-Correlation')
@@ -112,6 +120,7 @@ mask_array = logical(mask_array);
 u(mask_array) = NaN;
 v(mask_array) = NaN;
 v_map(mask_array) = NaN;
+v_map(v_map > 14) = 14;
 
 % Visualize velocity vectors and contours
 figure();
