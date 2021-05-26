@@ -24,7 +24,15 @@ for file in files: #Loop over files in folder, read file, specify velocity in df
 # Obtain polyfit coefficients 4th order
 coef = np.polyfit(CalibrationData['Voltage'], CalibrationData['U'], 4)
 
-
+# plot polyfit
+voltages = np.linspace(1.1, 1.9, 100)
+fig, ax = plt.subplots(1, 1, constrained_layout=True, dpi=150)
+ax.plot(voltages, np.polyval(coef, voltages), label=r"$4^{th}$-order polynomial fit", c='C00')
+ax.scatter(CalibrationData['Voltage'][::10000], CalibrationData['U'][::10000], label="measurements", c='C01', zorder=1)
+ax.grid()
+ax.legend(prop={"size": 14})
+ax.set_xlabel("E [V]", fontsize=14)
+ax.set_ylabel("U [m/s]", fontsize=14)
 #################### 0 AOA ###############################
 ZeroAOAFolder = 'data/0 aoa'
 files = os.listdir(ZeroAOAFolder)
