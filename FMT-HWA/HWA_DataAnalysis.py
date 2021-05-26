@@ -73,9 +73,9 @@ for height in HeightList: # Loop over heights
         'UminusMean2'].sum())) # compute standard deviation
 
 
-ZeroAoA_MeanPlus = np.array(ZeroAoA_Mean) + np.array(ZeroAoA_stdev) #Add
+ZeroAoA_PlusSigma = np.array(ZeroAoA_Mean) + np.array(ZeroAoA_stdev) #Add
 # standard devioation
-ZeroAoA_MeanMinus = np.array(ZeroAoA_Mean) - np.array(ZeroAoA_stdev) #
+ZeroAoA_MinusSigma = np.array(ZeroAoA_Mean) - np.array(ZeroAoA_stdev) #
 # Subtract standard deviation
 
 
@@ -84,14 +84,14 @@ plt.plot(ZeroAoA_Mean, HeightList, marker='D', label=r'$U_{mean}$')
 #plt.plot(ZeroAoA_rms, HeightList, marker='X', linestyle='--', label=r'$U_{
 # rms}$')
 #plt.plot(ZeroAoA_stdev, HeightList, marker='^', label=r'StDev' )
-plt.plot(ZeroAoA_MeanPlus, HeightList, marker='^', label=r'Plus' ) #Plot plus
-plt.plot(ZeroAoA_MeanMinus, HeightList) # plot minus
+plt.plot(ZeroAoA_PlusSigma, HeightList, label=r'$1\sigma$', color='k', linewidth=0.75, linestyle='--') #Plot plus
+plt.plot(ZeroAoA_MinusSigma, HeightList, color='k', linewidth=0.75, linestyle='--') # plot minus
 plt.xlabel('U [m/s]', fontsize=14)
 plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 0$^\circ$', fontsize=14)
 plt.legend(loc=2)
 plt.grid()
-plt.savefig('HWA_0AoA.png', bbox_inches='tight')
+plt.savefig('HWA_0AoA.pdf', bbox_inches='tight')
 
 ########################### 5 AOA ################################3
 FiveAOAFolder = 'data/5 aoa'
@@ -113,24 +113,29 @@ FiveAoAData = FiveAoAData[::2]
 # Create empty lists to append mean and rms
 FiveAoA_Mean = []
 FiveAoA_rms = []
+FiveAoA_stdev = []
 for height in HeightList: # Loop over heights
-    subset = FiveAoAData.loc[FiveAoAData['height']==height]     # filter height
-    # from df
-    FiveAoA_Mean.append(np.mean(subset['U']))                   # Calculate and
-    # append mean
-    FiveAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate and
-    # append rms
+    subset = FiveAoAData.loc[FiveAoAData['height']==height]     # filter height from df
+    FiveAoA_Mean.append(np.mean(subset['U']))                   # Calculate and append mean
+    FiveAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate and append rms
+    subset['UminusMean2'] = (subset['U'] - np.mean(subset['U'])) ** 2  # subtract mean from entries
+    FiveAoA_stdev.append(np.sqrt((1 / (subset['UminusMean2'].size - 1)) *subset['UminusMean2'].sum()))  # compute
+    # standard deviation
+
+FiveAoA_PlusSigma = np.array(FiveAoA_Mean) + np.array(FiveAoA_stdev)  # Add standard devioation
+FiveAoA_MinusSigma = np.array(FiveAoA_Mean) - np.array(FiveAoA_stdev)  #Subtract standard deviation
 
 plt.figure(2)
 plt.plot(FiveAoA_Mean, HeightList, marker='D', label='$U_{mean}$')
-plt.plot(FiveAoA_rms, HeightList, marker='X', linestyle='--', label='$U_{'
-                                                                    'rms}$')
+#plt.plot(FiveAoA_rms, HeightList, marker='X', linestyle='--', label='$U_{rms}$')
+plt.plot(FiveAoA_PlusSigma, HeightList, label=r'$1\sigma$', color='k', linewidth=0.75, linestyle='--') #Plot plus
+plt.plot(FiveAoA_MinusSigma, HeightList, color='k', linewidth=0.75, linestyle='--') # plot minus
 plt.xlabel('U [m/s]', fontsize=14)
 plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 5$^\circ$', fontsize=14)
 plt.legend(loc=2)
 plt.grid()
-plt.savefig('HWA_5AoA.png', bbox_inches='tight')
+plt.savefig('HWA_5AoA.pdf', bbox_inches='tight')
 
 
 
@@ -154,24 +159,30 @@ FifteenAoAData = FifteenAoAData[::2]
 # Create empty lists to append mean and rms
 FifteenAoA_Mean = []
 FifteenAoA_rms = []
+FifteenAoA_stdev = []
+
 for height in HeightList: # Loop over heights
-    subset = FifteenAoAData.loc[FifteenAoAData['height']==height]     # filter
-    # specific height data from df
-    FifteenAoA_Mean.append(np.mean(subset['U']))                   # Calculate
-    # and append mean
-    FifteenAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate
-    # and append rms
+    subset = FifteenAoAData.loc[FifteenAoAData['height']==height]     # filter specific height data from df
+    FifteenAoA_Mean.append(np.mean(subset['U']))                   # Calculate and append mean
+    FifteenAoA_rms.append(np.sqrt(np.mean(subset['U']**2)))        # Calculate and append rms
+    subset['UminusMean2'] = (subset['U'] - np.mean(subset['U'])) ** 2  # subtract mean from entries
+    FifteenAoA_stdev.append(np.sqrt((1 / (subset['UminusMean2'].size - 1)) * subset['UminusMean2'].sum()))  # compute
+    # standard deviation
+
+FifteenAoA_PlusSigma = np.array(FifteenAoA_Mean) + np.array(FifteenAoA_stdev)  # Addstandard devioation
+FifteenAoA_MinusSigma = np.array(FifteenAoA_Mean) - np.array(FifteenAoA_stdev)  # Subtract standard deviation
 
 plt.figure(3)
 plt.plot(FifteenAoA_Mean, HeightList, marker='D', label='$U_{mean}$')
-plt.plot(FifteenAoA_rms, HeightList, marker='X', linestyle='--', label='$U_{'
-                                                                       'rms}$')
+#plt.plot(FifteenAoA_rms, HeightList, marker='X', linestyle='--', label='$U_{rms}$')
+plt.plot(FifteenAoA_PlusSigma, HeightList, linestyle='--', label=r'$1\sigma$', color='k', linewidth=0.75 ) #Plot plus
+plt.plot(FifteenAoA_MinusSigma, HeightList, linestyle='--', color='k', linewidth=0.75) # plot minus
 plt.xlabel('U [m/s]', fontsize=14)
 plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 15$^\circ$', fontsize=14)
 plt.grid()
 plt.legend(loc=2)
-plt.savefig('HWA_15AoA.png', bbox_inches='tight')
+plt.savefig('HWA_15AoA.pdf', bbox_inches='tight')
 
 
 plt.show()
