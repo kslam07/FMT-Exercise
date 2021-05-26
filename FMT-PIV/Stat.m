@@ -2,9 +2,9 @@ clc; clear; close all;
 
 %% statistical analysis of the velocity field data
 % folder containing the velocity fields
-FoldRead='./data/Alpha0_dt100/PIV_32x32_50%ov/'; % (*** fill in ***)
+FoldRead='./data/Alpha15_dt100/PIV_32x32_50%ov/'; % (*** fill in ***)
 first=1;    % (*** fill in ***) first velocity field to be analyzed
-last=20;     % (*** fill in ***) last velocity field to be analyzed
+last=100;     % (*** fill in ***) last velocity field to be analyzed
 
 % do not modify the three lines below
 FileRoot = 'B0';
@@ -63,8 +63,8 @@ fprintf(fid,'%.3f %.3f %.5f %.5f\n',savematrix');
 fclose(fid);
 
 %% figures 
-figure(1), clf
-subplot(1,2,1), contourf(x,y,uMean), axis equal, axis tight
+figure(1)
+subplot(1,2,1), contourf(x,y,uMean, 20, 'Linestyle', 'none'), axis equal, axis tight
 colorbar;
 xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
@@ -73,7 +73,7 @@ set(gca,'FontSize',12,'Ydir','normal');
 hold on
 quiver(x,y,uMean,vMean,'k');
 
-subplot(1,2,2), contourf(x,y,sqrt(uStd.^2+vStd.^2)), axis equal, axis tight
+subplot(1,2,2), contourf(x,y,sqrt(uStd.^2+vStd.^2), 20, 'Linestyle', 'none'), axis equal, axis tight
 colorbar;
 xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
