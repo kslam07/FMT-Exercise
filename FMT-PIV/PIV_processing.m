@@ -2,8 +2,9 @@ clc; clear; close all;
 
 %% Self-made Code Group 01
 
-FoldRead = 'data\Alpha15_dt100\';
-FileRead = 'B00020.tif';
+AoA = 5;
+FoldRead = ['data\Alpha' int2str(AoA) '_dt100\'];
+FileRead = 'B00019.tif';
 
 pix_size =  4.40;           % [microns]
 M = 0.0428;                 % magnification
@@ -25,7 +26,7 @@ rows = size(image_1, 1);
 cols = size(image_1, 2);
 
 % Read mask
-mask = load('WIDIM/Mask_Alpha_15');
+mask = load(['WIDIM/Mask_Alpha_' int2str(AoA)]);
 mask = poly2mask(mask.xmask, mask.ymask, rows, cols);
 
 % Size windows
