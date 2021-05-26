@@ -2,7 +2,7 @@ clc; clear; close all;
 
 %% Self-made Code Group 01
 
-AoA = 0;
+AoA = 15;
 FoldRead = ['data\Alpha' int2str(AoA) '_dt100\'];
 
 FileApp = '.tif';
@@ -21,6 +21,7 @@ uArr=zeros(76,100,files);
 vArr=zeros(76,100,files);
 
 for file=1:files
+    
     if file>9
         FileRoot = 'B000';
     else
@@ -143,7 +144,6 @@ vArr = mean(vArr,3);
 v_map = sqrt(uArr.^2 + vArr.^2);
 v_map(mask_array) = NaN;
 v_map(v_map > 14) = 14;
-
 
 % Visualize velocity vectors and contours
 figure();
