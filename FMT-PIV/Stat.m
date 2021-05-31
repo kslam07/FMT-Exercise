@@ -62,7 +62,11 @@ fprintf(fid,'%s\n',['ZONE T="Frame 1", I=' num2str(I) ', J=' num2str(J) ', F=POI
 fprintf(fid,'%.3f %.3f %.5f %.5f\n',savematrix');
 fclose(fid);
 
-%% figures 
+%% figures
+
+mask = load('WIDIM/Mask_Alpha_15');
+%mask2 = poly2mask(mask.xmask, mask.ymask, rows, cols);
+
 figure(1)
 subplot(1,2,1), contourf(x,y,uMean, 20, 'Linestyle', 'none'), axis equal, axis tight
 colorbar;
@@ -79,3 +83,7 @@ xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
 title(['V'' RMS [m/s], Mean'],'FontSize',14)
 set(gca,'FontSize',12,'Ydir','normal');
+
+set(gcf, 'Position', get(0, 'Screensize'));
+set(gcf,'color','w')
+exportgraphics(gcf,'prof_AoA_0.eps','ContentType','vector')
