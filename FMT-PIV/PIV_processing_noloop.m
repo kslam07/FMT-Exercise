@@ -125,29 +125,28 @@ v_map(mask_array) = NaN;
 v_map(v_map > 14) = 14;
 
 % Visualize velocity vectors and contours
-figure();
-imagesc(v_map);
-hold on
-colormap('parula')
-cbar = colorbar();
-set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
-%v = zeros(size(u));
-quiver(u, v, 'k');
-xlabel('$X [mm]$', 'Interpreter', 'latex')
-ylabel('$Y [mm]$', 'Interpreter', 'latex')
-title('u [m/s], Mean')
+% figure();
+% imagesc(v_map);
+% hold on
+% colormap('parula')
+% cbar = colorbar();
+% set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
+% %v = zeros(size(u));
+% quiver(u, v, 'k');
+% xlabel('$X [mm]$', 'Interpreter', 'latex')
+% ylabel('$Y [mm]$', 'Interpreter', 'latex')
+% title('u [m/s], Mean')
 
-figure();
 xrange = (center_array(:, :, 2) - xo) * pix_size * 1e-3/M;
 yrange = (center_array(:, :, 1) - yo) * pix_size * 1e-3/M;
-contourf(xrange, yrange, v_map, 20, 'LineStyle', 'none');
-axis equal, axis tight
+
+figure();
+contourf(xrange, yrange, u, 20, 'Linestyle', 'none'), axis equal, axis tight
 hold on
-colormap('parula')
-cbar = colorbar();
-set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
+quiver(xrange, yrange, u, v,'k');
+colorbar;
 set(gca, 'YDir','reverse')
-quiver(xrange, yrange, u, v, 'k');
-xlabel('$X [mm]$', 'Interpreter', 'latex')
-ylabel('$Y [mm]$', 'Interpreter', 'latex')
-title('u [m/s], Mean')
+xlabel('X [mm]','FontSize',14)
+ylabel('Y [mm]','FontSize',14)
+title(['u [m/s], Instantaneous'],'FontSize',14)
+set(gca,'FontSize',12);
