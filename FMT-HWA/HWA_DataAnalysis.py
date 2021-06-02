@@ -95,6 +95,8 @@ plt.plot(ZeroAoA_MinusSigma, HeightList, color='k', linewidth=0.75, linestyle='-
 plt.xlabel('U [m/s]', fontsize=14)
 plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 0$^\circ$', fontsize=14)
+plt.xlim([0,14])
+plt.ylim([-40,40])
 plt.legend(loc=2)
 plt.grid()
 plt.savefig('HWA_0AoA.pdf', bbox_inches='tight') if save_fig else None
@@ -143,7 +145,15 @@ plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 5$^\circ$', fontsize=14)
 plt.legend(loc=2)
 plt.grid()
+<<<<<<< Updated upstream
 plt.savefig('HWA_5AoA.pdf', bbox_inches='tight') if save_fig else None
+=======
+plt.xlim([0,14])
+plt.ylim([-40,40])
+plt.savefig('HWA_5AoA.pdf', bbox_inches='tight')
+
+
+>>>>>>> Stashed changes
 
 ######################## 15 AOA ########################################
 FifteenAOAFolder = 'data/15 aoa'
@@ -188,7 +198,22 @@ plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 15$^\circ$', fontsize=14)
 plt.grid()
 plt.legend(loc=2)
+<<<<<<< Updated upstream
 plt.savefig('HWA_15AoA.pdf', bbox_inches='tight') if save_fig else None
+=======
+plt.xlim([0,14])
+plt.ylim([-40,40])
+plt.savefig('HWA_15AoA.pdf', bbox_inches='tight')
+
+>>>>>>> Stashed changes
+
+plt.figure(6)
+plt.plot(ZeroAoA_Mean, HeightList)
+plt.plot(FiveAoA_Mean, HeightList)
+plt.plot(FifteenAoA_Mean, HeightList)
+plt.xlim([0,14])
+plt.ylim([-40,40])
+
 
 plt.show()
 
