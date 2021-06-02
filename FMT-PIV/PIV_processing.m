@@ -22,7 +22,9 @@ vArr=zeros(76,100,files);
 
 for file=1:files
     
-    if file>9
+    if file>99
+        FileRoot = 'B00';
+    elseif file > 9
         FileRoot = 'B000';
     else
         FileRoot = 'B0000';
@@ -108,22 +110,6 @@ for file=1:files
 
     end
 
-    % Plot last correlation distribution
-    norm = false;
-    if norm
-        phi = phi_norm 
-    end
-
-% figure();
-% xrange = floor(size(phi, 1)/2);
-% yrange = floor(size(phi, 2)/2);
-% [X,Y] = meshgrid(-xrange:xrange, -yrange:yrange);
-% Z = phi;
-% surf(X,Y,Z)
-% xlabel('$\Delta x [px]$', 'Interpreter', 'latex')
-% ylabel('$\Delta y [px]$', 'Interpreter', 'latex')
-% title('Cross-Correlation')
-
     % Compute velocity magnitude
     u = -(xshift_array .* pix_size)/(M * dt);
     v = -(yshift_array .* pix_size)/(M * dt);
@@ -138,6 +124,22 @@ for file=1:files
     vArr(:, :, file) = v;
 end
 
+% Plot last correlation distribution
+% norm = false;
+% if norm
+%     phi = phi_norm 
+% end
+
+% figure();
+% xrange = floor(size(phi, 1)/2);
+% yrange = floor(size(phi, 2)/2);
+% [X,Y] = meshgrid(-xrange:xrange, -yrange:yrange);
+% Z = phi;
+% surf(X,Y,Z)
+% xlabel('$\Delta x [px]$', 'Interpreter', 'latex')
+% ylabel('$\Delta y [px]$', 'Interpreter', 'latex')
+% title('Cross-Correlation')
+
 % Visualize velocity vectors and contours
 uArr = mean(uArr, 3);
 vArr = mean(vArr, 3);
@@ -145,30 +147,48 @@ v_map = sqrt(uArr.^2 + vArr.^2);
 v_map(mask_array) = NaN;
 v_map(v_map > 14) = 14;
 
-% Visualize velocity vectors and contours
-figure();
-imagesc(v_map);
-hold on
-colormap('parula')
-cbar = colorbar();
-set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
-%v = zeros(size(u));
-quiver(uArr, vArr, 'k');
-xlabel('$X [mm]$', 'Interpreter', 'latex')
-ylabel('$Y [mm]$', 'Interpreter', 'latex')
-title('u [m/s], Mean')
+v_inst = sqrt(u.^2 + v.^2);
+v_inst(mask_array) = NaN;
+v_inst(v_inst > 14) = 14;
 
-figure();
+% Visualize velocity vectors and contours
+% figure();
+% imagesc(v_map);
+% hold on
+% colormap('parula')
+% cbar = colorbar();
+% set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
+% %v = zeros(size(u));
+% quiver(uArr, vArr, 'k');
+% xlabel('$X [mm]$', 'Interpreter', 'latex')
+% ylabel('$Y [mm]$', 'Interpreter', 'latex')
+% title('u [m/s], Mean')
+
 xrange = (center_array(:, :, 2) - xo) * pix_size * 1e-3/M;
 yrange = (center_array(:, :, 1) - yo) * pix_size * 1e-3/M;
-contourf(xrange, yrange, v_map, 20, 'LineStyle', 'none');
+
+figure();
+subplot(1,2,1), contourf(xrange, yrange, v_inst, 20, 'Linestyle', 'none'), axis equal, axis tight
+hold on
+quiver(xrange, yrange, uArr, vArr,'k');
+colorbar;
+set(gca, 'YDir','reverse')
+xlabel('X [mm]','FontSize',14)
+ylabel('Y [mm]','FontSize',14)
+title(['u [m/s], Instantaneous'],'FontSize',14)
+set(gca,'FontSize',12);
+
+subplot(1,2,2), contourf(xrange, yrange, v_map, 20, 'LineStyle', 'none');
 axis equal, axis tight
 hold on
-colormap('parula')
-cbar = colorbar();
-set(get(cbar, 'Title'), 'String', 'Velocity Magnitude [m/s]')
+quiver(xrange, yrange, u, v, 'k');
+colorbar;
 set(gca, 'YDir','reverse')
-quiver(xrange, yrange, uArr, vArr, 'k');
-xlabel('$X [mm]$', 'Interpreter', 'latex')
-ylabel('$Y [mm]$', 'Interpreter', 'latex')
-title('u [m/s], Mean')
+xlabel('X [mm]','FontSize',14)
+ylabel('Y [mm]','FontSize',14)
+title(['u [m/s], Mean'],'FontSize',14)
+set(gca,'FontSize',12);
+
+set(gcf, 'Position', get(0, 'Screensize'));
+set(gcf,'color','w')
+exportgraphics(gcf,'self_AoA_15_20s.eps','ContentType','vector')
