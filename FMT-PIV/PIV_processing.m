@@ -2,7 +2,7 @@ clc; clear; close all;
 
 %% Self-made Code Group 01
 
-AoA = 15;
+AoA = 0;
 FoldRead = ['data\Alpha' int2str(AoA) '_dt100\'];
 
 FileApp = '.tif';
@@ -13,7 +13,7 @@ dt = 100;                   % [microsec] time separation
 ws = 32;                    % window size
 ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
-files=20;                   % number of files
+files=20;                  % number of files
 xo = 133;                   % x origin in pixels
 yo = 527;                   % y origin in pixels
 
@@ -146,10 +146,12 @@ vArr = mean(vArr, 3);
 v_map = sqrt(uArr.^2 + vArr.^2);
 v_map(mask_array) = NaN;
 v_map(v_map > 14) = 14;
+uArr(uArr > 14) = 14;
 
 v_inst = sqrt(u.^2 + v.^2);
 v_inst(mask_array) = NaN;
 v_inst(v_inst > 14) = 14;
+u(u > 14) = 14;
 
 % Visualize velocity vectors and contours
 % figure();
@@ -168,27 +170,29 @@ xrange = (center_array(:, :, 2) - xo) * pix_size * 1e-3/M;
 yrange = (center_array(:, :, 1) - yo) * pix_size * 1e-3/M;
 
 figure();
-subplot(1,2,1), contourf(xrange, yrange, v_inst, 20, 'Linestyle', 'none'), axis equal, axis tight
+subplot(1,2,1), contourf(xrange, yrange, u, 20, 'Linestyle', 'none'), axis equal, axis tight
 hold on
-quiver(xrange, yrange, uArr, vArr,'k');
+quiver(xrange, yrange, u, v,'k');
 colorbar;
+caxis([0, 13]);
 set(gca, 'YDir','reverse')
 xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
 title(['u [m/s], Instantaneous'],'FontSize',14)
 set(gca,'FontSize',12);
 
-subplot(1,2,2), contourf(xrange, yrange, v_map, 20, 'LineStyle', 'none');
+subplot(1,2,2), contourf(xrange, yrange, uArr, 20, 'LineStyle', 'none');
 axis equal, axis tight
 hold on
-quiver(xrange, yrange, u, v, 'k');
+quiver(xrange, yrange, uArr, vArr, 'k');
 colorbar;
+caxis([0, 13]);
 set(gca, 'YDir','reverse')
 xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
 title(['u [m/s], Mean'],'FontSize',14)
 set(gca,'FontSize',12);
 
-set(gcf, 'Position', get(0, 'Screensize'));
-set(gcf,'color','w')
-exportgraphics(gcf,'self_AoA_15_20s.png')
+% set(gcf, 'Position', get(0, 'Screensize'));
+% set(gcf,'color','w')
+% exportgraphics(gcf,'self_AoA_0.png')

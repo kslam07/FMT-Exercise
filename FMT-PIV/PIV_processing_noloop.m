@@ -122,6 +122,7 @@ mask_array = logical(mask_array);
 u(mask_array) = NaN;
 v(mask_array) = NaN;
 v_map(mask_array) = NaN;
+u(u > 14) = 14;
 v_map(v_map > 14) = 14;
 
 % Visualize velocity vectors and contours
@@ -141,11 +142,11 @@ xrange = (center_array(:, :, 2) - xo) * pix_size * 1e-3/M;
 yrange = (center_array(:, :, 1) - yo) * pix_size * 1e-3/M;
 
 figure();
-contourf(xrange, yrange, v_map, 20, 'Linestyle', 'none'), axis equal, axis tight
+contourf(xrange, yrange, u, 20, 'Linestyle', 'none'), axis equal, axis tight
 hold on
 quiver(xrange, yrange, u, v,'k');
 colorbar;
-caxis([0, 13]);
+caxis([-6, 13]);
 set(gca, 'YDir','reverse')
 xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
