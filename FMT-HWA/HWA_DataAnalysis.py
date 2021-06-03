@@ -12,7 +12,7 @@ from scipy import stats
 
 ################## Calibration Data ###########################
 CalibrationFolder = 'data/Calibration'  # Path to calibation data
-pivFolder = "data/piv_data"
+pivFolder = "data/piv_data2"
 save_fig = False
 
 piv_files = [pivFolder + "/" + file for file in os.listdir(pivFolder)]
@@ -21,7 +21,7 @@ CalibrationData = pd.DataFrame({'X_Value': [], 'Voltage': [], 'U': []})  # Empty
 
 U_list = np.linspace(0, 20, 11)
 
-for file in files:  # Loop over files in folder, read file, specify velocity in df, concat to main df
+for file in files[1:]:  # Loop over files in folder, read file, specify velocity in df, concat to main df
     FilePath = CalibrationFolder + '/' + file  # Create path
     df = pd.read_csv(FilePath, sep=('\t'), skiprows=(22), usecols=[0, 1])
     df['U'] = float(file[-2:])
@@ -29,19 +29,17 @@ for file in files:  # Loop over files in folder, read file, specify velocity in 
     CalibrationData = pd.concat([CalibrationData, df], ignore_index=True)
 
 # Obtain polyfit coefficients 4th order
-coef = np.polyfit((CalibrationData[CalibrationData["U"] != 0.0])['Voltage'], (CalibrationData[CalibrationData['U']
-                                                                                              != 0.0])["U"], 4)
+coef = np.polyfit(CalibrationData['Voltage'], CalibrationData["U"], 4)
 
 # plot polyfit
-voltages = np.linspace(1.2, 1.9, 100)
-plt.figure(4, constrained_layout=True, dpi=150)
+voltages = np.linspace(1.4, 1.9, 100)
 fig, ax = plt.subplots(1, 1, constrained_layout=True, dpi=150)
-ax.plot(voltages, np.polyval(coef, voltages), label=r"$4^{th}$-order polynomial fit", c='C00')
-ax.scatter(CalibrationData['Voltage'][::10000], CalibrationData['U'][::10000], label="measurements", c='C01', zorder=1)
+ax.plot(np.polyval(coef, voltages), voltages, label=r"$4^{th}$-order polynomial fit", c='C00')
+ax.scatter(CalibrationData["U"][::10000], CalibrationData['Voltage'][::10000], label="measurements", c='C01', zorder=1)
 ax.grid()
 ax.legend(prop={"size": 14})
-ax.set_xlabel("E [V]", fontsize=14)
-ax.set_ylabel("U [m/s]", fontsize=14)
+ax.set_ylabel("E [V]", fontsize=14)
+ax.set_xlabel("U [m/s]", fontsize=14)
 plt.savefig('HWA_Calibration.png', bbox_inches='tight') if save_fig else None
 
 #################### 0 AOA ###############################
@@ -145,15 +143,8 @@ plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 5$^\circ$', fontsize=14)
 plt.legend(loc=2)
 plt.grid()
-<<<<<<< Updated upstream
 plt.savefig('HWA_5AoA.pdf', bbox_inches='tight') if save_fig else None
-=======
-plt.xlim([0,14])
-plt.ylim([-40,40])
-plt.savefig('HWA_5AoA.pdf', bbox_inches='tight')
 
-
->>>>>>> Stashed changes
 
 ######################## 15 AOA ########################################
 FifteenAOAFolder = 'data/15 aoa'
@@ -198,14 +189,7 @@ plt.ylabel('Height [mm]', fontsize=14)
 plt.title('Angle of Attack: 15$^\circ$', fontsize=14)
 plt.grid()
 plt.legend(loc=2)
-<<<<<<< Updated upstream
 plt.savefig('HWA_15AoA.pdf', bbox_inches='tight') if save_fig else None
-=======
-plt.xlim([0,14])
-plt.ylim([-40,40])
-plt.savefig('HWA_15AoA.pdf', bbox_inches='tight')
-
->>>>>>> Stashed changes
 
 plt.figure(6)
 plt.plot(ZeroAoA_Mean, HeightList)
@@ -224,58 +208,6 @@ piv_0alpha = np.loadtxt(piv_files[0])
 piv_5alpha = np.loadtxt(piv_files[2])
 piv_15alpha = np.loadtxt(piv_files[1])
 
-fig_mean = plt.figure(constrained_layout=True, dpi=150)
-
-spec_mean = fig_mean.add_gridspec(2, 2)
-f_mean_ax1 = fig_mean.add_subplot(spec_mean[0, 0])
-f_mean_ax2 = fig_mean.add_subplot(spec_mean[1, 0])
-f_mean_ax3 = fig_mean.add_subplot(spec_mean[:, 1])
-
-# HWA data
-f_mean_ax1.plot(ZeroAoA_Mean, HeightList, label="HWA")
-f_mean_ax2.plot(FiveAoA_Mean, HeightList)
-f_mean_ax3.plot(FifteenAoA_Mean, HeightList)
-
-# PIV data
-f_mean_ax1.plot(piv_0alpha[::-1, 0], piv_0alpha[:, -1], label="PIV")
-f_mean_ax2.plot(piv_5alpha[::-1, 0], piv_5alpha[:, -1])
-f_mean_ax3.plot(piv_15alpha[::-1, 0], piv_15alpha[:, -1])
-
-f_mean_ax2.set_xlabel("y [mm]")
-f_mean_ax3.set_xlabel("y [mm]")
-f_mean_ax1.set_ylabel(r"$U_{mean}$ [m/s]")
-f_mean_ax2.set_ylabel(r"$U_{mean}$ [m/s]")
-
-f_mean_ax1.grid()
-f_mean_ax2.grid()
-f_mean_ax3.grid()
-
-fig_rms = plt.figure(constrained_layout=True, dpi=150)
-
-spec_rms = fig_rms.add_gridspec(2, 2)
-f_rms_ax1 = fig_rms.add_subplot(spec_rms[0, 0])
-f_rms_ax2 = fig_rms.add_subplot(spec_rms[1, 0])
-f_rms_ax3 = fig_rms.add_subplot(spec_rms[:, 1])
-
-# HWA data
-f_rms_ax1.plot(ZeroAoA_stdev, HeightList, label="HWA")
-f_rms_ax2.plot(FiveAoA_stdev, HeightList)
-f_rms_ax3.plot(FifteenAoA_stdev, HeightList)
-
-# PIV data
-f_rms_ax1.plot(piv_0alpha[::-1, 1], piv_0alpha[:, -1], label="PIV")
-f_rms_ax2.plot(piv_5alpha[::-1, 1], piv_5alpha[:, -1])
-f_rms_ax3.plot(piv_15alpha[::-1, 1], piv_15alpha[:, -1])
-
-f_rms_ax2.set_xlabel("y [mm]")
-f_rms_ax3.set_xlabel("y [mm]")
-f_rms_ax1.set_ylabel(r"$U_{rms}$ [m/s]")
-f_rms_ax2.set_ylabel(r"$U_{rms}$ [m/s]")
-
-f_rms_ax1.grid()
-f_rms_ax2.grid()
-f_rms_ax3.grid()
-
 fig, ax = plt.subplots(2, 3, constrained_layout=True, dpi=150, sharey=True)
 
 hwa_data_rms = [ZeroAoA_stdev, FiveAoA_stdev, FifteenAoA_stdev]
@@ -289,8 +221,8 @@ for axi_mean, axi_rms, hwa_mean_i, hwa_rms_i, piv_data_i in zip(ax[0], ax[1], hw
     axi_rms.plot(hwa_rms_i, HeightList)
 
     # PIV data
-    axi_mean.plot(piv_data_i[::-1, 0], piv_data_i[:, -1], label="PIV")
-    axi_rms.plot(piv_data_i[::-1, 1], piv_data_i[:, -1])
+    axi_mean.plot(piv_data_i[:, 0], piv_data_i[:, -1], label="PIV")
+    axi_rms.plot(piv_data_i[:, 1], piv_data_i[:, -1])
 
     axi_rms.grid()
     axi_mean.grid()
