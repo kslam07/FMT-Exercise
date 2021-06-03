@@ -3,8 +3,8 @@ clc; clear; close all;
 %% statistical analysis of the velocity field data
 % folder containing the velocity fields
 FoldRead='./data/Alpha15_dt100/PIV_32x32_50%ov/'; % (*** fill in ***)
-first=20;    % (*** fill in ***) first velocity field to be analyzed
-last=20;     % (*** fill in ***) last velocity field to be analyzed
+first=1;    % (*** fill in ***) first velocity field to be analyzed
+last=100;     % (*** fill in ***) last velocity field to be analyzed
 
 % do not modify the three lines below
 FileRoot = 'B0';
@@ -100,7 +100,8 @@ quiver(x,y,uMean,vMean,'k');
 
 % set(gcf, 'Position', get(0, 'Screensize'));
 % set(gcf,'color','w')
-% exportgraphics(gcf,'prof_AoA_15.eps','ContentType','vector')
+% %exportgraphics(gcf,'prof_AoA_15_20s.eps','ContentType','vector')
+% exportgraphics(gcf,'prof_AoA_15_20s.png')
 
 %% study effect of time step
 
@@ -141,7 +142,8 @@ quiver(x,y,uMean,vMean,'k');
 % 
 % set(gcf, 'Position', get(0, 'Screensize'));
 % set(gcf,'color','w')
-% exportgraphics(gcf,'comp_dt.eps','ContentType','vector')
+% %exportgraphics(gcf,'comp_dt.eps','ContentType','vector')
+% exportgraphics(gcf,'comp_dt.png')
 
 %% study effect of window size
 
@@ -178,6 +180,7 @@ quiver(x,y,uMean,vMean,'k');
 % figure(3)
 % subplot(1,3,1), contourf(x2,y2,u2, 20, 'Linestyle', 'none'), axis equal, axis tight
 % colorbar;
+% caxis([min(u2,[],'all'), 12]);
 % xlabel('X [mm]','FontSize',14)
 % ylabel('Y [mm]','FontSize',14)
 % title(['window size = 16 x 16 [px]'],'FontSize',14, 'Interpreter', 'latex')
@@ -187,6 +190,7 @@ quiver(x,y,uMean,vMean,'k');
 % 
 % subplot(1,3,2), contourf(x,y,u, 20, 'Linestyle', 'none'), axis equal, axis tight
 % colorbar;
+% caxis([min(u,[],'all'), 12]);
 % xlabel('X [mm]','FontSize',14)
 % ylabel('Y [mm]','FontSize',14)
 % title(['window size = 32 x 32 [px]'],'FontSize',14, 'Interpreter', 'latex')
@@ -196,6 +200,7 @@ quiver(x,y,uMean,vMean,'k');
 % 
 % subplot(1,3,3), contourf(x3,y3,u3, 20, 'Linestyle', 'none'), axis equal, axis tight
 % colorbar;
+% caxis([min(u3,[],'all'), 12]);
 % xlabel('X [mm]','FontSize',14)
 % ylabel('Y [mm]','FontSize',14)
 % title(['window size = 64 x 64 [px]'],'FontSize',14, 'Interpreter', 'latex')
@@ -205,7 +210,8 @@ quiver(x,y,uMean,vMean,'k');
 % 
 % set(gcf, 'Position', get(0, 'Screensize'));
 % set(gcf,'color','w')
-% exportgraphics(gcf,'comp_ws.eps','ContentType','vector')
+% %exportgraphics(gcf,'comp_ws.eps','ContentType','vector')
+% exportgraphics(gcf,'comp_ws.png')
 
 %% study effect of ensemble size
 
@@ -220,6 +226,7 @@ quiver(x,y,uMean,vMean,'k');
 % figure(4)
 % subplot(1,2,1), contourf(x,y,uMean2, 20, 'Linestyle', 'none'), axis equal, axis tight
 % colorbar;
+% caxis([-4, 12]);
 % xlabel('X [mm]','FontSize',14)
 % ylabel('Y [mm]','FontSize',14)
 % title(['ensemble size = 10'],'FontSize',14, 'Interpreter', 'latex')
@@ -229,6 +236,7 @@ quiver(x,y,uMean,vMean,'k');
 % 
 % subplot(1,2,2), contourf(x,y,uMean, 20, 'Linestyle', 'none'), axis equal, axis tight
 % colorbar;
+% caxis([-4, 12]);
 % xlabel('X [mm]','FontSize',14)
 % ylabel('Y [mm]','FontSize',14)
 % title(['ensemble size = 100'],'FontSize',14, 'Interpreter', 'latex')
@@ -238,4 +246,5 @@ quiver(x,y,uMean,vMean,'k');
 % 
 % set(gcf, 'Position', get(0, 'Screensize'));
 % set(gcf,'color','w')
-% exportgraphics(gcf,'comp_ensemble.eps','ContentType','vector')
+% %exportgraphics(gcf,'comp_ensemble.eps','ContentType','vector')
+% exportgraphics(gcf,'comp_ensemble.png')
