@@ -12,8 +12,8 @@ dt = 100;                   % [microsec] time separation
 ws = 32;                    % window size
 ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
-xo = 137;                   % x origin in pixels
-yo = 532;                   % y origin in pixels
+xo = 133;                   % x origin in pixels
+yo = 527;                   % y origin in pixels
 
 % Read and split figures
 image_both = imread([FoldRead FileRead]);
@@ -141,10 +141,11 @@ xrange = (center_array(:, :, 2) - xo) * pix_size * 1e-3/M;
 yrange = (center_array(:, :, 1) - yo) * pix_size * 1e-3/M;
 
 figure();
-contourf(xrange, yrange, u, 20, 'Linestyle', 'none'), axis equal, axis tight
+contourf(xrange, yrange, v_map, 20, 'Linestyle', 'none'), axis equal, axis tight
 hold on
 quiver(xrange, yrange, u, v,'k');
 colorbar;
+caxis([0, 13]);
 set(gca, 'YDir','reverse')
 xlabel('X [mm]','FontSize',14)
 ylabel('Y [mm]','FontSize',14)
