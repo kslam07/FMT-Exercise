@@ -14,8 +14,8 @@ ws = 32;                    % window size
 ovlap = 0.5;                % overlap percentage
 window_shape={'square'};    % window shape
 files=20;                   % number of files
-xo = 137;                   % x origin in pixels
-yo = 532;                   % y origin in pixels
+xo = 133;                   % x origin in pixels
+yo = 527;                   % y origin in pixels
 
 uArr=zeros(76,100,files);
 vArr=zeros(76,100,files);
@@ -191,4 +191,4 @@ set(gca,'FontSize',12);
 
 set(gcf, 'Position', get(0, 'Screensize'));
 set(gcf,'color','w')
-exportgraphics(gcf,'self_AoA_15_20s.eps','ContentType','vector')
+exportgraphics(gcf,'self_AoA_15_20s.png')
